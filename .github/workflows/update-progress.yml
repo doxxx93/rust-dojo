@@ -1,0 +1,95 @@
+name: Update Progress
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  update-progress:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed chapters
+        id: changed
+        run: |
+          # PR에서 변경된 파일 목록 가져오기
+          FILES=$(git diff --name-only HEAD^..HEAD)
+          echo "Changed files:"
+          echo "$FILES"
+
+          # 책/챕터 디렉토리 추출 (예: the-book/01-getting-started)
+          CHAPTERS=$(echo "$FILES" | grep -E '^[^/]+/[^/]+/' | cut -d'/' -f1,2 | sort -u)
+
+          if [ -z "$CHAPTERS" ]; then
+            echo "No chapter directories changed"
+            exit 0
+          fi
+
+          echo "Changed chapters:"
+          echo "$CHAPTERS"
+
+          # 멀티라인 출력을 위한 처리
+          echo "chapters<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHAPTERS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Update issue checkboxes
+        if: steps.changed.outputs.chapters != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CHAPTERS="${{ steps.changed.outputs.chapters }}"
+
+          # 각 변경된 챕터에 대해 처리
+          while IFS= read -r chapter; do
+            if [ -z "$chapter" ]; then
+              continue
+            fi
+
+            echo "Processing: $chapter"
+
+            # 책 이름 추출 (예: the-book)
+            BOOK=$(echo "$chapter" | cut -d'/' -f1)
+            CHAPTER_NAME=$(echo "$chapter" | cut -d'/' -f2)
+
+            # 책 이름에 따라 Issue 번호 매핑
+            case "$BOOK" in
+              "the-book")
+                ISSUE_NUM=1
+                ;;
+              "rust-by-example")
+                ISSUE_NUM=2
+                ;;
+              "rustonomicon")
+                ISSUE_NUM=3
+                ;;
+              *)
+                echo "Unknown book: $BOOK"
+                continue
+                ;;
+            esac
+
+            echo "Updating Issue #$ISSUE_NUM for $chapter"
+
+            # Issue 본문 가져오기
+            ISSUE_BODY=$(gh issue view $ISSUE_NUM --json body -q .body)
+
+            # 체크박스 업데이트 (- [ ] → - [x])
+            # 챕터명 기반으로 매칭 (예: "01-getting-started" → "Getting Started")
+            UPDATED_BODY=$(echo "$ISSUE_BODY" | sed "s/- \[ \] \(.*$CHAPTER_NAME.*\)/- [x] \1/I")
+
+            # Issue 업데이트
+            echo "$UPDATED_BODY" | gh issue edit $ISSUE_NUM --body-file -
+
+            # 코멘트 추가
+            gh issue comment $ISSUE_NUM --body "✅ Completed: $chapter (PR #${{ github.event.pull_request.number }})"
+
+          done <<< "$CHAPTERS"
