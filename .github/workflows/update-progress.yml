@@ -105,7 +105,13 @@ jobs:
             ISSUE_BODY=$(gh issue view $ISSUE_NUM --json body -q .body)
 
             # 체크박스 업데이트 (- [ ] → - [x])
-            UPDATED_BODY=$(echo "$ISSUE_BODY" | sed "s/$SEARCH_PATTERN/$(echo "$SEARCH_PATTERN" | sed 's/\[ \]/[x]/')/")
+            if [ "$SLASH_COUNT" -eq 1 ]; then
+              # 메인 챕터: "- [ ] 1." → "- [x] 1."
+              UPDATED_BODY=$(echo "$ISSUE_BODY" | sed "s/^- \[ \] $CHAPTER_NUM\./- [x] $CHAPTER_NUM./")
+            else
+              # 서브 챕터: "  - [ ] 3.1 " → "  - [x] 3.1 "
+              UPDATED_BODY=$(echo "$ISSUE_BODY" | sed "s/^  - \[ \] $MAIN_NUM\.$SUB_NUM /  - [x] $MAIN_NUM.$SUB_NUM /")
+            fi
 
             # Issue 업데이트
             echo "$UPDATED_BODY" | gh issue edit $ISSUE_NUM --body-file -
