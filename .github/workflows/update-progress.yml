@@ -110,9 +110,13 @@ jobs:
             # 코멘트 추가
             COMMIT_SHA=$(git rev-parse --short HEAD)
             COMMIT_MSG=$(git log -1 --pretty=%B)
-            gh issue comment $ISSUE_NUM --body "✅ Completed: \`$chapter\`
+            COMMENT_BODY=$(cat <<EOF
+✅ Completed: \`$chapter\`
 
 Commit: [$COMMIT_SHA](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-Message: $COMMIT_MSG"
+Message: $COMMIT_MSG
+EOF
+)
+            gh issue comment $ISSUE_NUM --body "$COMMENT_BODY"
 
           done <<< "$CHAPTERS"
