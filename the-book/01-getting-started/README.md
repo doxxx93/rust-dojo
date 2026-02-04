@@ -17,7 +17,9 @@ Cargo는 Rust의 빌드 시스템이자 패키지 관리자이다.
 ## 코드 예제
 
 ```rust
-// 여기에 코드 작성
+fn main() {
+    println!("Hello, world!");
+}
 ```
 
 ## 참고 링크
