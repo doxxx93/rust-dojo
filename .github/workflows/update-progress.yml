@@ -1,14 +1,13 @@
 name: Update Progress
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - main
+      - master
 
 jobs:
   update-progress:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -25,8 +24,10 @@ jobs:
           echo "Changed files:"
           echo "$FILES"
 
-          # 책/챕터 디렉토리 추출 (예: the-book/01-getting-started)
-          CHAPTERS=$(echo "$FILES" | grep -E '^[^/]+/[^/]+/' | cut -d'/' -f1,2 | sort -u)
+          # 책/챕터 디렉토리 추출
+          # 메인 챕터: the-book/01-getting-started/README.md
+          # 서브 챕터: the-book/03-common-programming-concepts/01-variables/README.md
+          CHAPTERS=$(echo "$FILES" | grep -E '^[^/]+/[^/]+/' | sed 's|/README.md||' | sort -u)
 
           if [ -z "$CHAPTERS" ]; then
             echo "No chapter directories changed"
@@ -58,7 +59,6 @@ jobs:
 
             # 책 이름 추출 (예: the-book)
             BOOK=$(echo "$chapter" | cut -d'/' -f1)
-            CHAPTER_NAME=$(echo "$chapter" | cut -d'/' -f2)
 
             # 책 이름에 따라 Issue 번호 매핑
             case "$BOOK" in
@@ -77,19 +77,42 @@ jobs:
                 ;;
             esac
 
-            echo "Updating Issue #$ISSUE_NUM for $chapter"
+            # 챕터 번호 추출
+            # the-book/01-getting-started → "1"
+            # the-book/03-common-programming-concepts/01-variables → "3.1"
+            SLASH_COUNT=$(echo "$chapter" | tr -cd '/' | wc -c)
+
+            if [ "$SLASH_COUNT" -eq 1 ]; then
+              # 메인 챕터
+              CHAPTER_DIR=$(echo "$chapter" | cut -d'/' -f2)
+              CHAPTER_NUM=$(echo "$CHAPTER_DIR" | grep -oE '^[0-9]+' | sed 's/^0*//')
+              SEARCH_PATTERN="^- \[ \] $CHAPTER_NUM\."
+            else
+              # 서브 챕터
+              MAIN_DIR=$(echo "$chapter" | cut -d'/' -f2)
+              SUB_DIR=$(echo "$chapter" | cut -d'/' -f3)
+              MAIN_NUM=$(echo "$MAIN_DIR" | grep -oE '^[0-9]+' | sed 's/^0*//')
+              SUB_NUM=$(echo "$SUB_DIR" | grep -oE '^[0-9]+' | sed 's/^0*//')
+              SEARCH_PATTERN="^  - \[ \] $MAIN_NUM\.$SUB_NUM "
+            fi
+
+            echo "Updating Issue #$ISSUE_NUM with pattern: $SEARCH_PATTERN"
 
             # Issue 본문 가져오기
             ISSUE_BODY=$(gh issue view $ISSUE_NUM --json body -q .body)
 
             # 체크박스 업데이트 (- [ ] → - [x])
-            # 챕터명 기반으로 매칭 (예: "01-getting-started" → "Getting Started")
-            UPDATED_BODY=$(echo "$ISSUE_BODY" | sed "s/- \[ \] \(.*$CHAPTER_NAME.*\)/- [x] \1/I")
+            UPDATED_BODY=$(echo "$ISSUE_BODY" | sed "s/$SEARCH_PATTERN/$(echo "$SEARCH_PATTERN" | sed 's/\[ \]/[x]/')/")
 
             # Issue 업데이트
             echo "$UPDATED_BODY" | gh issue edit $ISSUE_NUM --body-file -
 
             # 코멘트 추가
-            gh issue comment $ISSUE_NUM --body "✅ Completed: $chapter (PR #${{ github.event.pull_request.number }})"
+            COMMIT_SHA=$(git rev-parse --short HEAD)
+            COMMIT_MSG=$(git log -1 --pretty=%B)
+            gh issue comment $ISSUE_NUM --body "✅ Completed: \`$chapter\`
+
+Commit: [$COMMIT_SHA](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+Message: $COMMIT_MSG"
 
           done <<< "$CHAPTERS"

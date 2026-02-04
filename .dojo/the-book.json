@@ -1,0 +1,185 @@
+{
+  "title": "The Rust Programming Language",
+  "chapters": {
+    "1": {
+      "title": "Getting Started",
+      "subs": []
+    },
+    "2": {
+      "title": "Programming a Guessing Game",
+      "subs": []
+    },
+    "3": {
+      "title": "Common Programming Concepts",
+      "subs": [
+        "Variables and Mutability",
+        "Data Types",
+        "Functions",
+        "Comments",
+        "Control Flow"
+      ]
+    },
+    "4": {
+      "title": "Understanding Ownership",
+      "subs": [
+        "What is Ownership?",
+        "References and Borrowing",
+        "The Slice Type"
+      ]
+    },
+    "5": {
+      "title": "Using Structs to Structure Related Data",
+      "subs": [
+        "Defining and Instantiating Structs",
+        "An Example Program Using Structs",
+        "Method Syntax"
+      ]
+    },
+    "6": {
+      "title": "Enums and Pattern Matching",
+      "subs": [
+        "Defining an Enum",
+        "The match Control Flow Construct",
+        "Concise Control Flow with if let"
+      ]
+    },
+    "7": {
+      "title": "Managing Growing Projects with Packages, Crates, and Modules",
+      "subs": [
+        "Packages and Crates",
+        "Defining Modules to Control Scope and Privacy",
+        "Paths for Referring to an Item in the Module Tree",
+        "Bringing Paths Into Scope with the use Keyword",
+        "Separating Modules into Different Files"
+      ]
+    },
+    "8": {
+      "title": "Common Collections",
+      "subs": [
+        "Storing Lists of Values with Vectors",
+        "Storing UTF-8 Encoded Text with Strings",
+        "Storing Keys with Associated Values in Hash Maps"
+      ]
+    },
+    "9": {
+      "title": "Error Handling",
+      "subs": [
+        "Unrecoverable Errors with panic!",
+        "Recoverable Errors with Result",
+        "To panic! or Not to panic!"
+      ]
+    },
+    "10": {
+      "title": "Generic Types, Traits, and Lifetimes",
+      "subs": [
+        "Generic Data Types",
+        "Traits: Defining Shared Behavior",
+        "Validating References with Lifetimes"
+      ]
+    },
+    "11": {
+      "title": "Writing Automated Tests",
+      "subs": [
+        "How to Write Tests",
+        "Controlling How Tests Are Run",
+        "Test Organization"
+      ]
+    },
+    "12": {
+      "title": "An I/O Project: Building a Command Line Program",
+      "subs": [
+        "Accepting Command Line Arguments",
+        "Reading a File",
+        "Refactoring to Improve Modularity and Error Handling",
+        "Developing the Library's Functionality with Test Driven Development",
+        "Working with Environment Variables",
+        "Writing Error Messages to Standard Error Instead of Standard Output"
+      ]
+    },
+    "13": {
+      "title": "Functional Language Features: Iterators and Closures",
+      "subs": [
+        "Closures: Anonymous Functions that Capture Their Environment",
+        "Processing a Series of Items with Iterators",
+        "Improving Our I/O Project",
+        "Comparing Performance: Loops vs. Iterators"
+      ]
+    },
+    "14": {
+      "title": "More about Cargo and Crates.io",
+      "subs": [
+        "Customizing Builds with Release Profiles",
+        "Publishing a Crate to Crates.io",
+        "Cargo Workspaces",
+        "Installing Binaries from Crates.io with cargo install",
+        "Extending Cargo with Custom Commands"
+      ]
+    },
+    "15": {
+      "title": "Smart Pointers",
+      "subs": [
+        "Using Box<T> to Point to Data on the Heap",
+        "Treating Smart Pointers Like Regular References with the Deref Trait",
+        "Running Code on Cleanup with the Drop Trait",
+        "Rc<T>, the Reference Counted Smart Pointer",
+        "RefCell<T> and the Interior Mutability Pattern",
+        "Reference Cycles Can Leak Memory"
+      ]
+    },
+    "16": {
+      "title": "Fearless Concurrency",
+      "subs": [
+        "Using Threads to Run Code Simultaneously",
+        "Using Message Passing to Transfer Data Between Threads",
+        "Shared-State Concurrency",
+        "Extensible Concurrency with the Sync and Send Traits"
+      ]
+    },
+    "17": {
+      "title": "Object Oriented Programming Features of Rust",
+      "subs": [
+        "Characteristics of Object-Oriented Languages",
+        "Using Trait Objects That Allow for Values of Different Types",
+        "Implementing an Object-Oriented Design Pattern"
+      ]
+    },
+    "18": {
+      "title": "Patterns and Matching",
+      "subs": [
+        "All the Places Patterns Can Be Used",
+        "Refutability: Whether a Pattern Might Fail to Match",
+        "Pattern Syntax"
+      ]
+    },
+    "19": {
+      "title": "Advanced Features",
+      "subs": [
+        "Unsafe Rust",
+        "Advanced Traits",
+        "Advanced Types",
+        "Advanced Functions and Closures",
+        "Macros"
+      ]
+    },
+    "20": {
+      "title": "Final Project: Building a Multithreaded Web Server",
+      "subs": [
+        "Building a Single-Threaded Web Server",
+        "Turning Our Single-Threaded Server into a Multithreaded Server",
+        "Graceful Shutdown and Cleanup"
+      ]
+    },
+    "21": {
+      "title": "Appendix",
+      "subs": [
+        "A - Keywords",
+        "B - Operators and Symbols",
+        "C - Derivable Traits",
+        "D - Useful Development Tools",
+        "E - Editions",
+        "F - Translations of the Book",
+        "G - How Rust is Made and \"Nightly Rust\""
+      ]
+    }
+  }
+}

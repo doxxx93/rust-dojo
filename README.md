@@ -10,17 +10,23 @@ Rust 문서 도장깨기
 - [Rust by Example](../../issues/2)
 - [Rustonomicon](../../issues/3)
 
-## 사용법
+## 빠른 시작
 
-### 새 챕터 시작
+### 1. 새 챕터 시작
 
 ```bash
-./scripts/new-chapter.sh the-book 01-getting-started
+# 메인 챕터
+./scripts/new-chapter.sh the-book 1
+
+# 서브챕터
+./scripts/new-chapter.sh the-book 3.1
 ```
 
-챕터 폴더와 템플릿이 자동 생성됩니다.
+### 2. 학습 내용 작성
 
-### PR 올리기
+생성된 `README.md`를 편집하여 학습 내용을 정리합니다.
+
+### 3. 커밋 및 푸시
 
 ```bash
 git add .
@@ -28,14 +34,14 @@ git commit -m "Complete: The Book Ch.1 Getting Started"
 git push
 ```
 
-PR 머지되면 자동으로 진행상황이 업데이트됩니다.
+푸시하면 자동으로 진행상황이 업데이트됩니다.
 
-## 구조
+## 상세 가이드
 
-```
-rust-dojo/
-├── the-book/           # The Rust Programming Language
-├── rust-by-example/    # Rust by Example
-├── rustonomicon/       # The Rustonomicon
-└── scripts/            # 자동화 스크립트
-```
+프로젝트 구조, 새 책 추가 방법, 트러블슈팅 등은 [CLAUDE.md](CLAUDE.md)를 참고하세요.
+
+## 참고 자료
+
+- [The Rust Book](https://doc.rust-lang.org/book/)
+- [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
+- [Rustonomicon](https://doc.rust-lang.org/nomicon/)
